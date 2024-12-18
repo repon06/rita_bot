@@ -75,7 +75,7 @@ def setup_scheduler(application):
         lambda: asyncio.run(send_morning_image(application.bot)),
         trigger="cron",
         hour=11,
-        minute=10,
+        minute=17,
     )
 
     # Задача для напоминания 10 числа
@@ -107,7 +107,8 @@ def main():
 
     # Обработчик текстовых сообщений, который отвечает на "куда звонить" или "когда починят"
     application.add_handler(
-        MessageHandler(filters.TEXT & ~filters.COMMAND, reply_to_phrases)
+        MessageHandler(filters.TEXT, reply_to_phrases)
+        # MessageHandler(filters.TEXT & ~filters.COMMAND, reply_to_phrases)
     )
 
     # Настройка планировщика
@@ -132,11 +133,13 @@ def get_images(width=1080):
         logger.error("Ошибка при запросе изображения от Unsplash")
         return None
 
+
 async def shutdown():
     global application
     await application.shutdown()
     await application.stop()
     await application.wait_closed()
+
 
 if __name__ == "__main__":
     try:
