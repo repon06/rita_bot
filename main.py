@@ -16,6 +16,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Сохраняем ссылку на application для последующего использования
+application = None
+
 
 async def send_morning_image(context):
     """Отправляет картинку с текстом каждое утро."""
@@ -72,7 +75,7 @@ def setup_scheduler(application):
         lambda: asyncio.run(send_morning_image(application.bot)),
         trigger="cron",
         hour=11,
-        minute=00,
+        minute=10,
     )
 
     # Задача для напоминания 10 числа
@@ -89,6 +92,7 @@ def setup_scheduler(application):
 
 # === Основной запуск бота ===
 def main():
+    global application  # Объявляем переменную глобальной
     # Создаем приложение бота
     application = ApplicationBuilder().token(TOKEN_TG).build()
 
@@ -128,6 +132,14 @@ def get_images(width=1080):
         logger.error("Ошибка при запросе изображения от Unsplash")
         return None
 
+async def shutdown():
+    global application
+    await application.shutdown()
+    await application.stop()
+    await application.wait_closed()
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        asyncio.run(shutdown())
