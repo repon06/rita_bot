@@ -17,15 +17,17 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-# === 1. Функция для отправки утреннего изображения ===
-async def send_morning_image(context: ContextTypes.DEFAULT_TYPE):
+async def send_morning_image(context):
     """Отправляет картинку с текстом каждое утро."""
     image_url = get_images()
-    await context.bot.send_photo(
-        chat_id=CHAT_ID,
-        photo=image_url,
-        caption="Доброе утро! 🌞\nНе забудьте улыбнуться сегодня!\nУК помнит о Вас)",
-    )
+    if image_url:
+        await context.send_photo(
+            chat_id=CHAT_ID,
+            photo=image_url,
+            caption="Доброе утро! 🌞\nНе забудьте улыбнуться сегодня!\nУК помнит о Вас)",
+        )
+    else:
+        logger.error("Не удалось отправить утреннюю картинку: URL не найден.")
 
 
 async def handle_fix_request(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -61,22 +63,25 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
-# === 5. Планировщик задач ===
 def setup_scheduler(application):
     """Настройка планировщика для выполнения задач."""
-    scheduler = BackgroundScheduler(timezone='Europe/Saratov')
+    scheduler = BackgroundScheduler(timezone="Europe/Saratov")
+
     # Задача для утреннего сообщения
     scheduler.add_job(
         lambda: asyncio.run(send_morning_image(application.bot)),
         trigger="cron",
-        hour=10,
-        minute=50,
+        hour=11,
+        minute=00,
     )
+
+    # Задача для напоминания 10 числа
     scheduler.add_job(
-        send_monthly_reminder,
-        "cron",
-        day=10, hour=9, minute=0,
-        args=[application.bot],
+        lambda: asyncio.run(send_monthly_reminder(application.bot)),
+        trigger="cron",
+        day=10,
+        hour=9,
+        minute=0,
     )
 
     scheduler.start()
