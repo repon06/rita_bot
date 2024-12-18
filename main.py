@@ -99,10 +99,10 @@ def main():
     application = ApplicationBuilder().token(TOKEN_TG).build()
 
     application.add_handler(
-        MessageHandler(filters.TEXT & ~filters.COMMAND, reply_to_phrases)
+        MessageHandler(filters.TEXT, reply_to_phrases)
         # MessageHandler(filters.TEXT & ~filters.COMMAND, reply_to_phrases)
         # MessageHandler(filters.ALL, reply_to_phrases)
-        # MessageHandler(filters.TEXT, reply_to_phrases)
+
         # MessageHandler(filters.Regex(r"(?i)(?:^/)?(?:куда звонить|когда починят).*"), reply_to_phrases)
         # MessageHandler(filters.Regex(r"(?i)(куда звонить|когда починят)"), reply_to_phrases)
     )

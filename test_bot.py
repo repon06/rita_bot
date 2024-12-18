@@ -11,12 +11,12 @@ async def chat_id(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 
-if __name__ == "__main__":
+#if __name__ == "__main__":
     # Создание приложения
-    app = ApplicationBuilder().token(TOKEN_TG).build()
+    #app = ApplicationBuilder().token(TOKEN_TG).build()
 
     # Добавление обработчика для команды "/chatid"
-    app.add_handler(CommandHandler("chatid", chat_id))
+    #app.add_handler(CommandHandler("chatid", chat_id))
 
     # Запуск бота
-    app.run_polling()
+    #app.run_polling(x)
