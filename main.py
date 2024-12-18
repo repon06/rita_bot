@@ -4,6 +4,7 @@ import logging
 import requests
 from apscheduler.schedulers.background import BackgroundScheduler
 from telegram import Update
+from telegram.error import NetworkError
 from telegram.ext import ApplicationBuilder, MessageHandler, ContextTypes, filters
 from telegram.ext import CommandHandler
 
@@ -16,8 +17,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Сохраняем ссылку на application для последующего использования
-application = None
+application = None  # Ссылка на приложение, чтобы можно было остановить его в случае ошибки
 
 
 async def send_morning_image(context):
@@ -49,7 +49,9 @@ async def send_monthly_reminder(context: ContextTypes.DEFAULT_TYPE):
 # === 3. Ответы на сообщения пользователей ===
 async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Ответ на фразы 'куда звонить' и 'когда починят?'."""
-    user_message = update.message.text.lower()  # Приводим к нижнему регистру
+    user_message = update.message.text.lower().strip()
+    if not user_message:
+        return  # Игнорируем пустые сообщения
     if "куда звонить" in user_message or "когда починят" in user_message:
         await update.message.reply_text(
             "Для решения вопросов звоните по телефону 📞 759659"
@@ -75,7 +77,7 @@ def setup_scheduler(application):
         lambda: asyncio.run(send_morning_image(application.bot)),
         trigger="cron",
         hour=11,
-        minute=17,
+        minute=23,
     )
 
     # Задача для напоминания 10 числа
@@ -96,20 +98,16 @@ def main():
     # Создаем приложение бота
     application = ApplicationBuilder().token(TOKEN_TG).build()
 
-    # Обработчики
-    application.add_handler(CommandHandler("start", start))
-
-    # Обработчик сообщений, который реагирует на фразы с учетом регистра
-    application.add_handler(MessageHandler(
-        filters.Regex(r'(?i).*отопление.*когда.*починят\?.*'),  # Убедитесь, что фраза отслеживается
-        handle_fix_request
-    ))
-
-    # Обработчик текстовых сообщений, который отвечает на "куда звонить" или "когда починят"
     application.add_handler(
-        MessageHandler(filters.TEXT, reply_to_phrases)
+        MessageHandler(filters.TEXT & ~filters.COMMAND, reply_to_phrases)
         # MessageHandler(filters.TEXT & ~filters.COMMAND, reply_to_phrases)
+        # MessageHandler(filters.ALL, reply_to_phrases)
+        # MessageHandler(filters.TEXT, reply_to_phrases)
+        # MessageHandler(filters.Regex(r"(?i)(?:^/)?(?:куда звонить|когда починят).*"), reply_to_phrases)
+        # MessageHandler(filters.Regex(r"(?i)(куда звонить|когда починят)"), reply_to_phrases)
     )
+
+    application.add_handler(CommandHandler("start", start))
 
     # Настройка планировщика
     setup_scheduler(application)
@@ -117,6 +115,19 @@ def main():
     # Запуск бота
     logger.info("Бот запущен...")
     application.run_polling()
+
+    # Используем обработчик завершения работы для безопасного завершения работы приложения
+    application.add_error_handler(handle_shutdown)
+
+
+async def handle_shutdown(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Обработчик ошибок, который завершает бота."""
+    logger.error(f"Произошла ошибка: {context.error}")
+    if isinstance(context.error, NetworkError):
+        await application.stop()
+        await application.wait_closed()
+    else:
+        raise context.error
 
 
 def get_images(width=1080):
@@ -134,15 +145,8 @@ def get_images(width=1080):
         return None
 
 
-async def shutdown():
-    global application
-    await application.shutdown()
-    await application.stop()
-    await application.wait_closed()
-
-
 if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        asyncio.run(shutdown())
+        logger.info("Бот завершил работу по команде остановки.")
