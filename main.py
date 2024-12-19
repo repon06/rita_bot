@@ -146,7 +146,6 @@ def main():
     logger.info("Бот запущен...")
     # application.run_polling() # кажд 10 сек
     application.run_polling(timeout=60)
-    # application.run_polling(allowed_updates=["message", "edited_message"]) #Убедиться, что бот обрабатывает только необходимые типы обновлений, указав allowed_updates:
 
     # Используем обработчик завершения работы для безопасного завершения работы приложения
     application.add_error_handler(handle_shutdown)
