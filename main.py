@@ -9,7 +9,7 @@ from telegram.ext import ApplicationBuilder, MessageHandler, ContextTypes, filte
 from telegram.ext import CommandHandler
 
 from config import TOKEN_TG, CHAT_ID, ACCESS_KEY_UNSPLASH, PHONE_AVARIA_UK, PHONE_SARATOV_VODOKANAL, PHONE_LIFT, \
-    PHONE_T_PLUS, PHONE_UPRAV_UK, PHONE_DISPECHER_KIROVSKIY, PHONE_DISPECHER, PHONE_AO_SPGES
+    PHONE_T_PLUS, PHONE_UPRAV_UK, PHONE_DISPECHER_KIROVSKIY, PHONE_DISPECHER, PHONE_AO_SPGES, DAYS
 
 # Настройка логирования
 logging.basicConfig(
@@ -46,11 +46,11 @@ async def handle_fix_request(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
 
 # === 2. Функция для отправки напоминания 10 числа ===
-async def send_monthly_reminder(context: ContextTypes.DEFAULT_TYPE):
-    """Напоминание о передаче показаний счетчиков каждое 10 число."""
+async def send_monthly_reminder(context: ContextTypes.DEFAULT_TYPE, message: str):
+    """Напоминание о передаче показаний счетчиков."""
     await context.bot.send_message(
         chat_id=CHAT_ID,
-        text="📅 Сегодня 10-е число! Не забудьте передать показания счетчиков!",
+        text=message,
     )
 
 
@@ -115,14 +115,17 @@ def setup_scheduler(application):
         minute=00,
     )
 
-    # Задача для напоминания 10 числа
-    scheduler.add_job(
-        lambda: asyncio.run(send_monthly_reminder(application.bot)),
-        trigger="cron",
-        day=10,
-        hour=9,
-        minute=0,
-    )
+    for day in DAYS:
+        scheduler.add_job(
+            lambda: asyncio.run(
+                send_monthly_reminder(application.bot,
+                                      f"📅 Сегодня {day}-е число! Не забудьте передать показания счетчиков!")
+            ),
+            trigger="cron",
+            day=day,
+            hour=9,
+            minute=5,
+        )
 
     scheduler.start()
 
@@ -133,8 +136,8 @@ def main():
 
     application = ApplicationBuilder().token(TOKEN_TG).build()
     application.add_handler(CommandHandler("start", start))
-    # application.add_handler(MessageHandler(filters.ALL, debug_messages))
     application.add_handler(MessageHandler(filters.TEXT, reply_to_phrases))
+    # application.add_handler(MessageHandler(filters.ALL, debug_messages))
 
     # Настройка планировщика
     setup_scheduler(application)
