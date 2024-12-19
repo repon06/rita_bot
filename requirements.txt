@@ -1,6 +1,4 @@
-apscheduler.schedulers.background
+apscheduler
 config
 python-telegram-bot
 requests
-telegram.error
-telegram.ext
