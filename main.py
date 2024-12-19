@@ -1,16 +1,19 @@
 import asyncio
 import logging
+import os
 
 import requests
 from apscheduler.schedulers.background import BackgroundScheduler
+from flask import Flask, request, app
 from telegram import Update
 from telegram.error import NetworkError
 from telegram.ext import ApplicationBuilder, MessageHandler, ContextTypes, filters
 from telegram.ext import CommandHandler
 
 from config import TOKEN_TG, CHAT_ID, ACCESS_KEY_UNSPLASH, PHONE_AVARIA_UK, PHONE_SARATOV_VODOKANAL, PHONE_LIFT, \
-    PHONE_T_PLUS, PHONE_UPRAV_UK, PHONE_DISPECHER_KIROVSKIY, PHONE_DISPECHER, PHONE_AO_SPGES, DAYS
+    PHONE_T_PLUS, PHONE_UPRAV_UK, PHONE_DISPECHER_KIROVSKIY, PHONE_DISPECHER, PHONE_AO_SPGES, DAYS, HOST_BOT
 
+app = Flask(__name__)
 # Настройка логирования
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -144,6 +147,7 @@ def main():
     application.add_handler(CommandHandler("start", start))
     application.add_handler(MessageHandler(filters.TEXT, reply_to_phrases))
     # application.add_handler(MessageHandler(filters.ALL, debug_messages))
+    application.add_error_handler(handle_shutdown)  # для безопасного завершения работы приложения
 
     # Настройка планировщика
     setup_scheduler(application)
@@ -153,8 +157,9 @@ def main():
     # application.run_polling() # кажд 10 сек
     application.run_polling(timeout=40)
 
-    # Используем обработчик завершения работы для безопасного завершения работы приложения
-    application.add_error_handler(handle_shutdown)
+    # Настроить порт для Flask
+    port = int(os.environ.get("PORT", 5000))  # Render автоматически назначит порт
+    app.run(host='0.0.0.0', port=port, debug=False)  # Запуск Flask на порту, который назначает Render
 
 
 async def handle_shutdown(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -180,6 +185,21 @@ def get_images(width=1080):
     else:
         logger.error("Ошибка при запросе изображения от Unsplash")
         return None
+
+
+# Flask endpoint для получения вебхуков
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    if request.method == 'POST':
+        json_str = request.get_data().decode('UTF-8')
+        update = Update.de_json(json_str, application.bot)
+        application.update_queue.put(update)
+        return 'OK'
+
+
+# Устанавливаем вебхук
+def set_webhook():
+    application.bot.set_webhook(HOST_BOT)
 
 
 if __name__ == "__main__":
