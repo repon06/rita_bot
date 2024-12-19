@@ -8,16 +8,24 @@ from telegram.error import NetworkError
 from telegram.ext import ApplicationBuilder, MessageHandler, ContextTypes, filters
 from telegram.ext import CommandHandler
 
-from config import TOKEN_TG, CHAT_ID, ACCESS_KEY_UNSPLASH
+from config import TOKEN_TG, CHAT_ID, ACCESS_KEY_UNSPLASH, PHONE_AVARIA_UK, PHONE_SARATOV_VODOKANAL, PHONE_LIFT, \
+    PHONE_T_PLUS, PHONE_UPRAV_UK, PHONE_DISPECHER_KIROVSKIY, PHONE_DISPECHER, PHONE_AO_SPGES
 
 # Настройка логирования
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    level=logging.INFO,
+    level=logging.DEBUG,
 )
+# logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 application = None  # Ссылка на приложение, чтобы можно было остановить его в случае ошибки
+
+
+async def debug_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    logger.info(f"Text received in group: {update.message.text}")
+    print(f"Message received: {update.message.text}")
+    await update.message.reply_text("Сообщение получено!")
 
 
 async def send_morning_image(context):
@@ -34,7 +42,7 @@ async def send_morning_image(context):
 
 
 async def handle_fix_request(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Для уточнения вопроса звоните по номеру: 759659")
+    await update.message.reply_text(f"Для уточнения вопроса звоните по номеру: {PHONE_AVARIA_UK}")
 
 
 # === 2. Функция для отправки напоминания 10 числа ===
@@ -48,14 +56,39 @@ async def send_monthly_reminder(context: ContextTypes.DEFAULT_TYPE):
 
 # === 3. Ответы на сообщения пользователей ===
 async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Ответ на фразы 'куда звонить' и 'когда починят?'."""
+    logger.info(f"Received message: {update.message.text}")
     user_message = update.message.text.lower().strip()
     if not user_message:
         return  # Игнорируем пустые сообщения
     if "куда звонить" in user_message or "когда починят" in user_message:
+        await update.message.reply_text(f"Для решения вопросов звоните по телефону 📞\n"
+                                        f"Аварийно-диспетчерская служба управляющей компании (круглосуточно): {PHONE_AVARIA_UK}")
+    elif "вода" in user_message or "воды" in user_message or "отопление" in user_message:
+        await update.message.reply_text(f"Для решения вопросов звоните по телефону 📞:\n"
+                                        f"Аварийно-диспетчерская служба управляющей компании (круглосуточно): {PHONE_AVARIA_UK}\n"
+                                        f"Саратовводоканал: {PHONE_SARATOV_VODOKANAL}\n"
+                                        f"Т Плюс: {PHONE_T_PLUS}")
+    elif "лифт" in user_message:
+        await update.message.reply_text(f"Для решения вопросов звоните по телефону 📞\n"
+                                        f"Аварийная служба лифтовиков: {PHONE_LIFT}")
+    elif "паспортист" in user_message or "офис ук" in user_message:
+        await update.message.reply_text("Уважаемые собственники!\n"
+                                        "Офис управляющей компании переехал, теперь находится по адресу: г.Саратов, ул. Им. Тархова д. 45а, кв. 99, этаж 1, домофон № 99.\n"
+                                        "Режим работы офиса - с 9:00 до 18:00.\n"
+                                        "Режим работы паспортного стола остался такой же.\n"
+                                        "Пн. С 14:00 до 18:00\n"
+                                        "Чт. С 9:00 до 11:00")
+    elif "свет" in user_message or "электричеств" in user_message:
         await update.message.reply_text(
-            "Для решения вопросов звоните по телефону 📞 759659"
-        )
+            f"Уточнить информацию о перебоях (отключении) тепло-, водо-, электро- и газоснабжения можно по следующим телефонам 📞:\n"
+            f"Диспетчерский пункт по Кировскому району: {PHONE_DISPECHER_KIROVSKIY}\n"
+            f"Центральный диспетчерский пункт: {PHONE_DISPECHER}\n"
+            f"Горячая линия АО СПГЭС: {PHONE_AO_SPGES}\n"
+            f"Т Плюс: {PHONE_T_PLUS}")
+    if ("управляющая компания" in user_message or "управляющей компании" in user_message
+        or "управляющую компанию" in user_message) or "Сергей Федорович" in user_message:
+        await update.message.reply_text(f"Для решения вопросов звоните по телефону 📞\n"
+                                        f"Управляющий УК Сергей Федорович: {PHONE_UPRAV_UK}")
 
 
 # === 4. Функция для старта бота ===
@@ -76,8 +109,8 @@ def setup_scheduler(application):
     scheduler.add_job(
         lambda: asyncio.run(send_morning_image(application.bot)),
         trigger="cron",
-        hour=11,
-        minute=23,
+        hour=9,
+        minute=00,
     )
 
     # Задача для напоминания 10 числа
@@ -95,26 +128,20 @@ def setup_scheduler(application):
 # === Основной запуск бота ===
 def main():
     global application  # Объявляем переменную глобальной
-    # Создаем приложение бота
+
     application = ApplicationBuilder().token(TOKEN_TG).build()
-
-    application.add_handler(
-        MessageHandler(filters.TEXT, reply_to_phrases)
-        # MessageHandler(filters.TEXT & ~filters.COMMAND, reply_to_phrases)
-        # MessageHandler(filters.ALL, reply_to_phrases)
-
-        # MessageHandler(filters.Regex(r"(?i)(?:^/)?(?:куда звонить|когда починят).*"), reply_to_phrases)
-        # MessageHandler(filters.Regex(r"(?i)(куда звонить|когда починят)"), reply_to_phrases)
-    )
-
     application.add_handler(CommandHandler("start", start))
+    # application.add_handler(MessageHandler(filters.ALL, debug_messages))
+    application.add_handler(MessageHandler(filters.TEXT, reply_to_phrases))
 
     # Настройка планировщика
     setup_scheduler(application)
 
     # Запуск бота
     logger.info("Бот запущен...")
-    application.run_polling()
+    # application.run_polling() # кажд 10 сек
+    application.run_polling(timeout=60)
+    # application.run_polling(allowed_updates=["message", "edited_message"]) #Убедиться, что бот обрабатывает только необходимые типы обновлений, указав allowed_updates:
 
     # Используем обработчик завершения работы для безопасного завершения работы приложения
     application.add_error_handler(handle_shutdown)
