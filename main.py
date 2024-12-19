@@ -14,7 +14,7 @@ from config import TOKEN_TG, CHAT_ID, ACCESS_KEY_UNSPLASH, PHONE_AVARIA_UK, PHON
 # Настройка логирования
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    level=logging.DEBUG,
+    level=logging.INFO,
 )
 # logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -71,6 +71,8 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif "лифт" in user_message:
         await update.message.reply_text(f"Для решения вопросов звоните по телефону 📞\n"
                                         f"Аварийная служба лифтовиков: {PHONE_LIFT}")
+    elif "индекс" in user_message:
+        await update.message.reply_text("Почтовый индекс нашего дома: 410082")
     elif "паспортист" in user_message or "офис ук" in user_message:
         await update.message.reply_text("Уважаемые собственники!\n"
                                         "Офис управляющей компании переехал, теперь находится по адресу: г.Саратов, ул. Им. Тархова д. 45а, кв. 99, этаж 1, домофон № 99.\n"
