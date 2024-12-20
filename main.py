@@ -53,13 +53,13 @@ def start_telegram_bot():
 
     # Запуск бота
     logger.info("Бот запущен...")
-    application.run_polling(timeout=40)
+    application.run_polling(timeout=40, poll_interval=1)
 
 
 # Flask endpoint для получения вебхуков
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    if request.method == 'POST':
+    if request.method == 'POST': 
         json_str = request.get_data().decode('UTF-8')
         update = Update.de_json(json_str, application.bot)
         application.update_queue.put(update)
