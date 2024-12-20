@@ -45,7 +45,7 @@ pip list
 	2.	Настройте Webhook с помощью метода setWebhook, указав URL вашего сервера.
 
 Пример команды для настройки Webhook:
-curl -F "url=https://your-server.com/bot7547250960:AAG6WZ36C8iBozagfggFpEP6QEQwIyyQPpM" https://api.telegram.org/bot7547250960:AAG6WZ36C8iBozagfggFpEP6QEQwIyyQPpM/setWebhook
+curl -F "url=https://your-server.com/botTOKEN" https://api.telegram.org/botTOKEN/setWebhook
 
 Настройка бота для Webhook:
 
@@ -56,3 +56,10 @@ application.run_webhook(
     url_path="bot",
     webhook_url="https://your-server.com/bot"
 )
+
+CHECK http://127.0.0.1:5555/
+CHECK http://127.0.0.1:5555/webhook
+CHECK https://rita-bot.onrender.com
+CHECK https://rita-bot.onrender.com/webhook
+
+CHECK https://dashboard.uptimerobot.com/
