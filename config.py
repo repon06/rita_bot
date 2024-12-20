@@ -15,4 +15,4 @@ PHONE_AO_SPGES = '8 (800) 775-57-89'
 
 DAYS = [10, 15, 19]  # Дни месяца для напоминаний
 
-HOST_BOT = 'https://rita-bot.onrender.com/webhook' # URL хостинга на Render
+HOST_BOT = 'https://rita-bot.onrender.com' # URL хостинга на Render

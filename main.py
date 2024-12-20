@@ -1,16 +1,20 @@
+import asyncio
+import json
 import logging
 import os
-import asyncio
 import threading
+
 from flask import Flask, request
 from telegram import Update
 from telegram.error import NetworkError
 from telegram.ext import ApplicationBuilder, MessageHandler, ContextTypes, filters
 from telegram.ext import CommandHandler
+
 from config import TOKEN_TG, HOST_BOT
 from handlers import start, reply_to_phrases
 from scheduler import setup_scheduler
 
+import ping  # Импортируем ping.py
 app = Flask(__name__)
 logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -20,7 +24,7 @@ application = None  # Ссылка на приложение, чтобы мож�
 
 # Асинхронная функция для установки вебхука
 async def set_webhook():
-    await application.bot.set_webhook(HOST_BOT)
+    await application.bot.set_webhook(HOST_BOT + "/webhook")
 
 
 # Асинхронная обработка ошибок, включая завершение работы бота
@@ -51,6 +55,10 @@ def start_telegram_bot():
     loop = asyncio.get_event_loop()
     loop.run_until_complete(set_webhook())
 
+    # Запускаем сервер для пинга
+    ping_thread = threading.Thread(target=ping.ping_server, daemon=True)
+    ping_thread.start()  # Запускаем пинг в отдельном потоке
+
     # Запуск бота
     logger.info("Бот запущен...")
     application.run_polling(timeout=40, poll_interval=1)
@@ -59,11 +67,17 @@ def start_telegram_bot():
 # Flask endpoint для получения вебхуков
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    if request.method == 'POST': 
-        json_str = request.get_data().decode('UTF-8')
-        update = Update.de_json(json_str, application.bot)
+    if request.method == 'POST':
+        json_str = request.get_data().decode('UTF-8')  # Получаем строку
+        json_data = json.loads(json_str)  # Преобразуем строку JSON в словарь
+        update = Update.de_json(json_data, application.bot)  # Передаем словарь
         application.update_queue.put(update)
         return 'OK'
+
+
+@app.route('/')
+def index():
+    return "Бот работает!"
 
 
 # Запуск Flask в отдельном потоке

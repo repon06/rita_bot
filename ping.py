@@ -1,5 +1,4 @@
 import logging
-import threading
 import time
 
 import requests
@@ -19,6 +18,5 @@ def ping_server():
             logging.error(f"Ошибка при пинге: {e}")
         time.sleep(PING_INTERVAL)
 
-
 # Запустите пинг-цикл в отдельном потоке
-threading.Thread(target=ping_server, daemon=True).start()
+# threading.Thread(target=ping_server, daemon=True).start()
