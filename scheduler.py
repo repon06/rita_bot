@@ -1,31 +1,31 @@
-import asyncio
-
-from apscheduler.schedulers.background import BackgroundScheduler
-
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from config import DAYS
 from handlers import send_morning_image, send_monthly_reminder
 
-
 def setup_scheduler(application):
     """Настройка планировщика для выполнения задач."""
-    scheduler = BackgroundScheduler(timezone="Europe/Saratov")
+    scheduler = AsyncIOScheduler(timezone="Europe/Saratov")
 
     # Задача для утреннего сообщения
     scheduler.add_job(
-        lambda: asyncio.run(send_morning_image(application.bot)),
+        send_morning_image,  # Асинхронная функция
         trigger="cron",
         hour=9,
-        minute=00)
+        minute=0,
+        kwargs={"bot": application.bot},  # Передаем bot как аргумент
+    )
 
     for day in DAYS:
         scheduler.add_job(
-            lambda: asyncio.run(
-                send_monthly_reminder(
-                    application.bot, f"📅 Сегодня {day}-е число! Не забудьте передать показания счетчиков!")
-            ),
+            send_monthly_reminder,  # Асинхронная функция
             trigger="cron",
             day=day,
             hour=9,
-            minute=5)
+            minute=5,
+            kwargs={
+                "bot": application.bot,
+                "message": f"📅 Сегодня {day}-е число! Не забудьте передать показания счетчиков!",
+            },
+        )
 
     scheduler.start()

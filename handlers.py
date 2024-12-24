@@ -54,11 +54,11 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                         f"Управляющий УК Сергей Федорович: {PHONE_UPRAV_UK}")
 
 
-async def send_morning_image(context):
+async def send_morning_image(bot):
     """Отправляет картинку с текстом каждое утро."""
     image_url = get_images()
     if image_url:
-        await context.send_photo(
+        await bot.send_photo(
             chat_id=CHAT_ID,
             photo=image_url,
             caption="Доброе утро! 🌞\nНе забудьте улыбнуться сегодня!\nУК помнит о Вас)",
@@ -67,9 +67,9 @@ async def send_morning_image(context):
         logger.error("Не удалось отправить утреннюю картинку: URL не найден.")
 
 
-async def send_monthly_reminder(context: ContextTypes.DEFAULT_TYPE, message: str):
+async def send_monthly_reminder(bot, message: str):
     """Напоминание о передаче показаний счетчиков."""
-    await context.bot.send_message(
+    await bot.send_message(
         chat_id=CHAT_ID,
         text=message)
 
