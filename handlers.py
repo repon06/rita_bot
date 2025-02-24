@@ -6,6 +6,7 @@ from telegram.ext import ContextTypes
 from config import PHONE_SARATOV_VODOKANAL, PHONE_T_PLUS, PHONE_AVARIA_UK, PHONE_LIFT, PHONE_DISPECHER_KIROVSKIY, \
     PHONE_DISPECHER, PHONE_AO_SPGES, PHONE_UPRAV_UK, CHAT_ID
 from img_helper import get_images
+from weather import get_weather
 
 logger = logging.getLogger(__name__)
 
@@ -47,21 +48,25 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f"Центральный диспетчерский пункт: {PHONE_DISPECHER}\n"
             f"Горячая линия АО СПГЭС: {PHONE_AO_SPGES}\n"
             f"Т Плюс: {PHONE_T_PLUS}")
-    if ("управляющая компания" in user_message or "управляющей компании" in user_message
-        or "управляющую компанию" in user_message) or "Сергей Федорович" in user_message:
+    elif ("управляющая компания" in user_message or "управляющей компании" in user_message
+          or "управляющую компанию" in user_message) or "Сергей Федорович" in user_message:
         await update.message.reply_text(f"Уважаемые собственники!\n"
                                         "Офис управляющей компании переехал, теперь находится по адресу: г.Саратов, ул. Им. Тархова д. 45а, кв. 99, этаж 1, домофон № 99.\n"
                                         f"Управляющий УК Сергей Федорович: {PHONE_UPRAV_UK}")
+    elif "погода" in user_message or "погоду" in user_message:
+        weather_info = get_weather()
+        await update.message.reply_text(weather_info)
 
 
 async def send_morning_image(bot):
     """Отправляет картинку с текстом каждое утро."""
     image_url = get_images()
+    weather_info = get_weather()
     if image_url:
         await bot.send_photo(
             chat_id=CHAT_ID,
             photo=image_url,
-            caption="Доброе утро! 🌞\nНе забудьте улыбнуться сегодня!\nУК помнит о Вас)",
+            caption=f"Доброе утро! 🌞\nНе забудьте улыбнуться сегодня!\nУК помнит о Вас. Но не всегда)\nПогода на сегодня: {weather_info}",
         )
     else:
         logger.error("Не удалось отправить утреннюю картинку: URL не найден.")
