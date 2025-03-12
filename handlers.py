@@ -60,7 +60,8 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(
             "<b>Первое правило</b>: Не упоминать о Чате Мысникова 6.\n"
             "<b>Второе правило</b>: Не упоминать нигде о Чате Мысникова 6.\n"
-            "<b>Третье правило</b>: Никакой рекламы! Для этого есть соответствующие площадки.")
+            "<b>Третье правило</b>: Никакой рекламы! Для этого есть соответствующие площадки.",
+            parse_mode="HTML")
 
 
 async def send_morning_image(bot):
