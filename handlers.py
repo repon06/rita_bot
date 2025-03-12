@@ -56,6 +56,11 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif "погода" in user_message or "погоду" in user_message:
         weather_info = get_weather()
         await update.message.reply_text(weather_info)
+    elif "правила чата" in user_message:
+        await update.message.reply_text(
+            "Первое правило: Не упоминать о Чате Мысникова 6. Члены клуба не должны обсуждать его и поддерживать секретный характер.\n"
+            "Второе правило: Не упоминать нигде о Чате Мысникова 6.\n"
+            "Третье правило: Никакой рекламы! Для этого есть соответствующие площадки.")
 
 
 async def send_morning_image(bot):
