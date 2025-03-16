@@ -49,6 +49,7 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f"Горячая линия АО СПГЭС: {PHONE_AO_SPGES}\n"
             f"Т Плюс: {PHONE_T_PLUS}")
     elif ("управляющая компания" in user_message or "управляющей компании" in user_message
+          or "адрес ук" in user_message or "адрес нашей ук" in user_message
           or "управляющую компанию" in user_message) or "Сергей Федорович" in user_message:
         await update.message.reply_text(f"Уважаемые собственники!\n"
                                         "Офис управляющей компании переехал, теперь находится по адресу: г.Саратов, ул. Им. Тархова д. 45а, кв. 99, этаж 1, домофон № 99.\n"
