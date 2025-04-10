@@ -11,6 +11,7 @@ PHONE_LIFT = '695-424'
 PHONE_T_PLUS = '32-00-22'
 PHONE_DISPECHER_KIROVSKIY = '659-872'
 PHONE_AO_SPGES = '8 (800) 775-57-89'
+GAS_URL = 'мойгаз.смородина.онлайн'
 
 DAYS = [10, 15, 19]  # Дни месяца для напоминаний
 

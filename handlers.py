@@ -4,7 +4,7 @@ from telegram import Update
 from telegram.ext import ContextTypes
 
 from config import PHONE_SARATOV_VODOKANAL, PHONE_T_PLUS, PHONE_AVARIA_UK, PHONE_LIFT, PHONE_DISPECHER_KIROVSKIY, \
-    PHONE_DISPECHER, PHONE_AO_SPGES, PHONE_UPRAV_UK, CHAT_ID
+    PHONE_DISPECHER, PHONE_AO_SPGES, PHONE_UPRAV_UK, CHAT_ID, GAS_URL
 from img_helper import get_images
 from weather import get_weather
 
@@ -63,6 +63,11 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "<b>Второе правило</b>: Не упоминать нигде о Чате Мысникова 6.\n"
             "<b>Третье правило</b>: Никакой рекламы! Для этого есть соответствующие площадки.",
             parse_mode="HTML")
+    elif ("показания газ" in user_message or "газовые показания" in user_message
+          or "показания по газу" in user_message or "данные по газу" in user_message):
+        await update.message.reply_text(
+            "Показания счетчиков газа можно передать в Приложении или  на сайте 'мой газ'.\n"
+            f"{GAS_URL}")
 
 
 async def send_morning_image(bot):
