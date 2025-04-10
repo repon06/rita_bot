@@ -8,10 +8,10 @@ from flask import Flask, request
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters
 
+import ping
 from config import TOKEN_TG, HOST_BOT
 from handlers import start, reply_to_phrases
 from scheduler import setup_scheduler
-import ping
 
 app = Flask(__name__)
 logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)

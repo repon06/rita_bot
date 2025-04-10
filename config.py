@@ -1,5 +1,10 @@
-TOKEN_TG = "7547250960:AAG6WZ36C8iBozagfggFpEP6QEQwIyyQPpM"
-ACCESS_KEY_UNSPLASH = 'n44z-RVmtjiR-YPAel19A3TUQNnNjBwpElFZ7qeQO1g'
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+TOKEN_TG = os.getenv("TOKEN_TG")
+ACCESS_KEY_UNSPLASH = os.getenv("ACCESS_KEY_UNSPLASH")
 # CHAT_ID = "-1002334608878"  # Укажите ID - test_group
 CHAT_ID = -1002465540172  # Chat ID Мысникова6
 
@@ -17,6 +22,6 @@ DAYS = [10, 15, 19]  # Дни месяца для напоминаний
 
 HOST_BOT = 'https://rita-bot.onrender.com' # URL хостинга на Render
 
-WEATHER_API_KEY = 'ebe12672fdb965886538520503d3024f'
+WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
 WEATHER_CITY = 'Saratov'
 WEATHER_COUNTRY = 'RU'
