@@ -4,7 +4,7 @@ from telegram import Update
 from telegram.ext import ContextTypes
 
 from config import PHONE_SARATOV_VODOKANAL, PHONE_T_PLUS, PHONE_AVARIA_UK, PHONE_LIFT, PHONE_DISPECHER_KIROVSKIY, \
-    PHONE_DISPECHER, PHONE_AO_SPGES, PHONE_UPRAV_UK, CHAT_ID, GAS_URL
+    PHONE_DISPECHER, PHONE_AO_SPGES, PHONE_UPRAV_UK, CHAT_ID, GAS_URL, AD_KEYWORDS
 from img_helper import get_images
 from weather import get_weather
 
@@ -68,6 +68,8 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(
             "Показания счетчиков газа можно передать в Приложении или  на сайте 'мой газ'.\n"
             f"{GAS_URL}")
+    elif any(word in user_message for word in AD_KEYWORDS):
+        await update.message.delete()
 
 
 async def send_morning_image(bot):
@@ -78,7 +80,7 @@ async def send_morning_image(bot):
         await bot.send_photo(
             chat_id=CHAT_ID,
             photo=image_url,
-            caption=f"Доброе утро! 🌞\nНе забудьте улыбнуться сегодня!\nУК помнит о Вас. Но не всегда)\n{weather_info}",
+            caption=f"Доброе утро! 🌞\nНе забудьте сегодня улыбнуться!\n{weather_info}",
         )
     else:
         logger.error("Не удалось отправить утреннюю картинку: URL не найден.")

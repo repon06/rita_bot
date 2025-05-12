@@ -25,3 +25,9 @@ HOST_BOT = 'https://rita-bot.onrender.com' # URL хостинга на Render
 WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
 WEATHER_CITY = 'Saratov'
 WEATHER_COUNTRY = 'RU'
+
+AD_KEYWORDS = [
+    "открытие", "детский центр", "мероприятие", "приглашаем", "будем рады", "ждём вас",
+    "ищем", "вакансия", "требуется", "работа", "педагог", "занятия",
+    "сертификаты", "подарки", "vk.com", "https?://"
+]
