@@ -1,5 +1,6 @@
-from dotenv import load_dotenv
 import os
+
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -20,7 +21,7 @@ GAS_URL = 'мойгаз.смородина.онлайн'
 
 DAYS = [10, 15, 19]  # Дни месяца для напоминаний
 
-HOST_BOT = 'https://rita-bot.onrender.com' # URL хостинга на Render
+HOST_BOT = 'https://rita-bot.onrender.com'  # URL хостинга на Render
 
 WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
 WEATHER_CITY = 'Saratov'
@@ -28,6 +29,7 @@ WEATHER_COUNTRY = 'RU'
 
 AD_KEYWORDS = [
     "открытие", "детский центр", "мероприятие", "приглашаем", "будем рады", "ждём вас",
-    "ищем", "вакансия", "требуется", "работа", "педагог", "занятия",
-    "сертификаты", "подарки", "vk.com", "https?://"
+    "ищем", "ищу", "вакансия", "требуется", "работа", "педагог", "занятия",
+    "рассаду", "покупке", "куплю", "продаю", "заказать", "цветы", "растения", "кустарники",
+    "сертификаты", "розыгрыши", "подарки", "vk.com", "https://", "http://"
 ]
