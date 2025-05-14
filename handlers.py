@@ -19,7 +19,7 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if "куда звонить" in user_message or "когда починят" in user_message:
         await update.message.reply_text(f"Для решения вопросов звоните по телефону 📞\n"
                                         f"Аварийно-диспетчерская служба управляющей компании (круглосуточно): {PHONE_AVARIA_UK}")
-    elif "вода" in user_message or "воды" in user_message or "отопление" in user_message:
+    elif "вода" in user_message or "водой" in user_message or "воды" in user_message or "отопление" in user_message:
         await update.message.reply_text(f"Для решения вопросов звоните по телефону 📞:\n"
                                         f"Аварийно-диспетчерская служба управляющей компании (круглосуточно): {PHONE_AVARIA_UK}\n"
                                         f"Саратовводоканал: {PHONE_SARATOV_VODOKANAL}\n"
