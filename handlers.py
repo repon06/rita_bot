@@ -69,7 +69,7 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "Показания счетчиков газа можно передать в Приложении или  на сайте 'мой газ'.\n"
             f"{GAS_URL}")
     elif any(word in user_message for word in AD_KEYWORDS):
-        logger.warning("SPAM: Рекламное сообщение удалено.")
+        logger.warning(f"SPAM: Рекламное сообщение '{update.message.text}' удалено.")
         await update.message.delete()
 
 
