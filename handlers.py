@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    logger.info(f"Received message: {update.message.text}")
+    #logger.info(f"Received message: {update.message.text}")
     user_message = update.message.text.lower().strip()
     if not user_message:
         return  # Игнорируем пустые сообщения
