@@ -6,7 +6,7 @@ from telegram.ext import ContextTypes
 
 from config import PHONE_SARATOV_VODOKANAL, PHONE_T_PLUS, PHONE_AVARIA_UK, PHONE_LIFT, PHONE_DISPECHER_KIROVSKIY, \
     PHONE_DISPECHER, PHONE_AO_SPGES, PHONE_UPRAV_UK, CHAT_ID, GAS_URL, AD_KEYWORDS
-from img_helper import get_images
+from img_helper import get_images, get_img_data_by_url
 from weather import get_weather
 
 logger = logging.getLogger(__name__)
@@ -111,12 +111,13 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     elif any(phrase in user_message for phrase in ["тестовая картинка"]):
         image_url = get_images()
+        image_data = get_img_data_by_url(image_url)
         await update.message.reply_text("тестовая картинка")
 
         if image_url:
             await context.bot.send_photo(
                 chat_id=update.effective_chat.id,
-                photo=image_url,
+                photo=image_data,
                 caption="тестовая картинка"
             )
 
