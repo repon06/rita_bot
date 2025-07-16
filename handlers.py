@@ -109,6 +109,17 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 "Показания счетчиков газа можно передать в Приложении или на сайте 'мой газ'.\n"
                 f"{GAS_URL}")
 
+    elif any(phrase in user_message for phrase in ["тестовая картинка"]):
+        image_url = get_images()
+        await update.message.reply_text("тестовая картинка")
+
+        if image_url:
+            await context.bot.send_photo(
+                chat_id=CHAT_ID,
+                photo=image_url,
+                caption="тестовая картинка"
+            )
+
     elif any(word in user_message for word in AD_KEYWORDS):
         logger.warning(f"SPAM: Рекламное сообщение '{update.message.text}' удалено.")
         await update.message.delete()
