@@ -115,7 +115,6 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         if image_url:
             await context.bot.send_photo(
-                chat_id=CHAT_ID,
                 photo=image_url,
                 caption="тестовая картинка"
             )
