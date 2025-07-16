@@ -82,7 +82,8 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text(f"Уважаемые собственники!\n"
                                             "Офис управляющей компании переехал, теперь находится по адресу: г.Саратов, ул. Им. Тархова д. 45а, кв. 99, этаж 1, домофон № 99.\n"
                                             f"Управляющий УК Сергей Федорович: {PHONE_UPRAV_UK}")
-    elif any(word in user_message for word in ["топот", "топание", "топонье", "шум", "сверли", "сверлен", "досверл"]):
+    elif any(word in user_message for word in
+             ["тишина", "тишину", "топот", "топание", "топонье", "шум", "сверли", "сверлен", "досверл"]):
         if not is_on_cooldown_global(chat_id, "silent"):
             await update.message.reply_text(
                 'Закон Саратовской области от 2 декабря 2020 года № 148‑ЗСО "Об обеспечении тишины и покоя граждан на территории Саратовской области"\r\n'
