@@ -92,8 +92,36 @@ def get_harvard_art(width=1080, max_attempts=10):
 def get_met_art(width=1080):
     # Step 1: Поиск объектов с известным художником
     search_url = "https://collectionapi.metmuseum.org/public/collection/v1/search"
+    famous_artists = [
+        "Ilya Repin", "Ivan Aivazovsky", "Viktor Vasnetsov", "Mikhail Vrubel",
+        "Isaac Levitan", "Valentin Serov", "Kazimir Malevich", "Wassily Kandinsky",
+        "Marc Chagall", "El Lissitzky", "Alexander Rodchenko", "Natalia Goncharova",
+        "Mikhail Larionov", "Pavel Filonov", "Kuzma Petrov-Vodkin", "Andrei Rublev",
+        "Karl Bryullov", "Arkhip Kuindzhi", "Fyodor Rokotov", "Vasily Surikov",
+        "Boris Kustodiev", "Zinaida Serebriakova", "Vasily Vereshchagin", "Ivan Shishkin",
+        "Leonardo da Vinci", "Michelangelo", "Raphael", "Sandro Botticelli", "Titian",
+        "Albrecht Dürer", "Hieronymus Bosch", "Caravaggio", "Rembrandt", "Peter Paul Rubens",
+        "Diego Velázquez", "Johannes Vermeer", "Francisco Goya", "William Blake", "Eugène Delacroix",
+        "Jean-Auguste-Dominique Ingres", "John Constable", "J.M.W. Turner", "Caspar David Friedrich",
+        "Gustave Courbet", "Édouard Manet", "Claude Monet", "Edgar Degas", "Pierre-Auguste Renoir",
+        "Camille Pissarro", "Paul Cézanne", "Vincent van Gogh", "Paul Gauguin", "Henri de Toulouse-Lautrec",
+        "Henri Matisse", "Georges Seurat", "Pablo Picasso", "Juan Gris", "Fernand Léger", "Marc Chagall",
+        "Amedeo Modigliani", "Giorgio de Chirico", "Wassily Kandinsky", "Kazimir Malevich", "Piet Mondrian",
+        "Paul Klee", "Joan Miró", "Salvador Dalí", "René Magritte", "Max Ernst", "Frida Kahlo",
+        "Diego Rivera", "David Alfaro Siqueiros", "Jackson Pollock", "Mark Rothko", "Willem de Kooning",
+        "Barnett Newman", "Robert Motherwell", "Arshile Gorky", "Francis Bacon", "Lucian Freud",
+        "Andy Warhol", "Roy Lichtenstein", "Jasper Johns", "Robert Rauschenberg", "Jean-Michel Basquiat",
+        "Keith Haring", "Yayoi Kusama", "Takashi Murakami", "Damien Hirst", "Tracey Emin",
+        "Banksy", "Chuck Close", "Bridget Riley", "Gerhard Richter", "Anselm Kiefer",
+        "Lucio Fontana", "Frank Stella", "Donald Judd", "Dan Flavin", "Sol LeWitt",
+        "Cy Twombly", "Ellsworth Kelly", "Richard Serra", "Antoni Tàpies", "Edvard Munch",
+        "Gustav Klimt", "Egon Schiele", "Oskar Kokoschka", "Georges Braque", "Alfred Sisley",
+        "Mary Cassatt", "Berthe Morisot", "Élisabeth Vigée Le Brun", "Artemisia Gentileschi", "John Singer Sargent",
+        "Winslow Homer", "Thomas Eakins", "Edward Hopper", "Georgia O'Keeffe", "Norman Rockwell",
+        "Jean Dubuffet", "Hans Hofmann", "Josef Albers", "Romare Bearden", "Jacob Lawrence"
+    ]
     params = {
-        "q": "Van Gogh",
+        "q": random.choice(famous_artists),
         "hasImages": "true",
         "artistOrCulture": "true"
     }
