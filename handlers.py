@@ -6,7 +6,7 @@ from telegram.ext import ContextTypes
 
 from config import PHONE_SARATOV_VODOKANAL, PHONE_T_PLUS, PHONE_AVARIA_UK, PHONE_LIFT, PHONE_DISPECHER_KIROVSKIY, \
     PHONE_DISPECHER, PHONE_AO_SPGES, PHONE_UPRAV_UK, CHAT_ID, GAS_URL, AD_KEYWORDS
-from img_helper import get_images, get_img_data_by_url
+from img_helper import get_random_url_image, get_img_data_by_url
 from weather import get_weather
 
 logger = logging.getLogger(__name__)
@@ -110,7 +110,7 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f"{GAS_URL}")
 
     elif any(phrase in user_message for phrase in ["тестовая картинка"]):
-        image_url = get_images()
+        image_url = get_random_url_image()
         image_data = get_img_data_by_url(image_url)
         await update.message.reply_text("тестовая картинка")
 
@@ -128,7 +128,7 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def send_morning_image(bot):
     """Отправляет картинку с текстом каждое утро."""
-    image_url = get_images()
+    image_url = get_random_url_image()
     weather_info = get_weather()
     if image_url:
         await bot.send_photo(
