@@ -1,4 +1,5 @@
 import logging
+import random
 from io import BytesIO
 
 import requests
@@ -21,14 +22,14 @@ def get_random_url_image(width=1080):
         return None
 
 
-def get_img_data_by_url(image_url: str):
+def get_img_data_by_url(image_url: str, width: int = 1080):
     if image_url:
         try:
             response = requests.get(image_url, timeout=10)
             if response.status_code == 200:
                 img_data = BytesIO(response.content)
                 if img_data:
-                    resized_data = resize_image(img_data, width=1080)
+                    resized_data = resize_image(img_data, width=width)
                     if resized_data:
                         with open("resized.jpg", "wb") as f:
                             f.write(resized_data.read())
@@ -40,7 +41,7 @@ def get_img_data_by_url(image_url: str):
     return None
 
 
-def resize_image(image_data: BytesIO, width: int) -> BytesIO | None:
+def resize_image(image_data: BytesIO, width: int = 1080) -> BytesIO | None:
     try:
         img = Image.open(image_data)
         w_percent = width / float(img.size[0])
@@ -62,7 +63,7 @@ def get_harvard_art(width=1080, max_attempts=10):
     query = 'verificationlevel:4 AND classification:Paintings AND peoplecount:1 AND primaryimageurl:*'
 
     for _ in range(max_attempts):
-        resp = requests.get(base_url, params={
+        response = requests.get(base_url, params={
             "apikey": api_key,
             "size": 1,
             "hasimage": 1,
@@ -71,7 +72,7 @@ def get_harvard_art(width=1080, max_attempts=10):
             "fields": "title,people,description,primaryimageurl"
         }).json()
 
-        records = resp.get("records", [])
+        records = response.get("records", [])
         if not records:
             continue
 
@@ -83,7 +84,8 @@ def get_harvard_art(width=1080, max_attempts=10):
         return {
             "title": record.get("title"),
             "artist": record.get("people", [{}])[0].get("name"),
-            "description": record.get("description"),
+            "description": record.get("description") or record.get("labeltext")
+                           or record.get("provenance") or record.get("technique") or record.get("medium"),
             "image": f"{image_url}?width={width}"
         }
 
@@ -105,7 +107,7 @@ def get_met_art(width=1080):
         return None
 
     # Step 2: Получение информации о первом объекте
-    object_id = object_ids[0]
+    object_id = random.choice(object_ids)
     object_url = f"https://collectionapi.metmuseum.org/public/collection/v1/objects/{object_id}"
     obj_data = requests.get(object_url).json()
 
@@ -124,5 +126,11 @@ def get_met_art(width=1080):
 
 
 if __name__ == "__main__":
-    print(get_met_art())
-    print(get_harvard_art())
+    met_art = get_met_art()
+    harvard_art = get_harvard_art()
+    print(met_art)
+    print(harvard_art)
+    met_art_img_data = get_img_data_by_url(met_art.get('image'), 800)
+    harvard_art_img_data = get_img_data_by_url(harvard_art.get('image'), 800)
+    img = Image.open(met_art_img_data)
+    img.show()
