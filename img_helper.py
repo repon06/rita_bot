@@ -30,9 +30,6 @@ def get_img_data_by_url(image_url: str, width: int = 1080):
                 img_data = BytesIO(response.content)
                 if img_data:
                     resized_data = resize_image(img_data, width=width)
-                    if resized_data:
-                        with open("resized.jpg", "wb") as f:
-                            f.write(resized_data.read())
                 return resized_data
             else:
                 logger.error(f"Не удалось загрузить картинку. Status code: {response.status_code}")
