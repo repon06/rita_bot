@@ -121,17 +121,27 @@ def get_met_art(width=1080):
         "Jean Dubuffet", "Hans Hofmann", "Josef Albers", "Romare Bearden", "Jacob Lawrence"
     ]
     params = {
-        "q": random.choice(famous_artists),
+        "q": "Dali",#random.choice(famous_artists),
         "hasImages": "true",
-        "artistOrCulture": "true"
+        #"artistOrCulture": "true"
     }
-    search = requests.get(search_url, params=params).json()
+    response = requests.get(search_url, params=params)
+    if response.status_code == 200:
+        search = response.json()
     object_ids = search.get("objectIDs", [])
+    print(params)
+    print(len(object_ids))
+
+    for obj_id in object_ids:
+        obj = requests.get(f"https://collectionapi.metmuseum.org/public/collection/v1/objects/{obj_id}")
+        object_data =obj.json()
+        if "Dali" in object_data.get("artistDisplayName", ""):
+            print(obj_id, object_data.get("title"))
 
     if not object_ids:
         return None
 
-    # Step 2: Получение информации о первом объекте
+    # Step 2: Получение информации об объекте
     object_id = random.choice(object_ids)
     object_url = f"https://collectionapi.metmuseum.org/public/collection/v1/objects/{object_id}"
     obj_data = requests.get(object_url).json()
@@ -155,7 +165,9 @@ if __name__ == "__main__":
     harvard_art = get_harvard_art()
     print(met_art)
     print(harvard_art)
-    met_art_img_data = get_img_data_by_url(met_art.get('image'), 800)
-    harvard_art_img_data = get_img_data_by_url(harvard_art.get('image'), 800)
-    img = Image.open(met_art_img_data)
-    img.show()
+    if met_art:
+        met_art_img_data = get_img_data_by_url(met_art.get('image'), 800)
+        img = Image.open(met_art_img_data)
+        img.show()
+    if harvard_art:
+        harvard_art_img_data = get_img_data_by_url(harvard_art.get('image'), 800)
