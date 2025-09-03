@@ -124,14 +124,11 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
         today = datetime.date.today().strftime("%d/%m")
         BASE_DIR = Path(__file__).resolve().parent
         img_path = BASE_DIR / "img" / "3_sent_2.jpeg"
-        await update.message.reply_text(
-            f"я календарь переверну...\r\n{today}\r\npath exist: {img_path.exists()}", parse_mode="HTML")
         # if today == "03/09" and img_path.exists():
         with img_path.open("rb") as photo:
-            await context.bot.send_photo(
-                chat_id=CHAT_ID,
+            await update.message.reply_photo(
                 photo=photo,
-                caption="Не забудьте календарь перевернуть!",
+                caption=f"я календарь переверну...\r\ndate: {today}\r\nimg exist: {img_path.exists()}",
             )
     elif any(word in user_message for word in AD_KEYWORDS):
         logger.warning(f"SPAM: Рекламное сообщение '{update.message.text}' удалено.")
@@ -144,8 +141,8 @@ async def send_morning_image(bot):
 
     today = datetime.date.today().strftime("%d/%m")
     if today == "03/09":
-        # отправляем локальный файл
-        img_path = Path("img/3_sent_2.jpeg")
+        BASE_DIR = Path(__file__).resolve().parent
+        img_path = BASE_DIR / "img" / "3_sent_2.jpeg"
         if img_path.exists():
             with img_path.open("rb") as photo:
                 await bot.send_photo(
