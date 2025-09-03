@@ -1,4 +1,6 @@
+import datetime
 import logging
+from pathlib import Path
 
 from cachetools import TTLCache
 from telegram import Update
@@ -93,7 +95,18 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if not is_on_cooldown_global(chat_id, "weather_info"):
             weather_info = get_weather()
             await update.message.reply_text(weather_info)
-
+    elif "3 сентября" in user_message:
+        today = datetime.date.today().strftime("%d/%m")
+        if today == "03/09":
+            # отправляем локальный файл
+            img_path = Path("img/3_sent_2.jpeg")
+            if img_path.exists():
+                with img_path.open("rb") as photo:
+                    await context.bot.send_photo(
+                        chat_id=CHAT_ID,
+                        photo=photo,
+                        caption=f"Доброе утро! 🌞\nНе забудьте календарь перевернуть!",
+                    )
     elif "правила" in user_message or "правила чата" in user_message:
         if not is_on_cooldown_global(chat_id, "rules_info"):
             await update.message.reply_text(
@@ -128,16 +141,29 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def send_morning_image(bot):
     """Отправляет картинку с текстом каждое утро."""
-    image_url = get_random_url_image()
     weather_info = get_weather()
-    if image_url:
-        await bot.send_photo(
-            chat_id=CHAT_ID,
-            photo=image_url,
-            caption=f"Доброе утро! 🌞\nНе забудьте сегодня улыбнуться!\n{weather_info}",
-        )
+
+    today = datetime.date.today().strftime("%d/%m")
+    if today == "03/09":
+        # отправляем локальный файл
+        img_path = Path("img/3_sent_2.jpeg")
+        if img_path.exists():
+            with img_path.open("rb") as photo:
+                await bot.send_photo(
+                    chat_id=CHAT_ID,
+                    photo=photo,
+                    caption=f"Доброе утро! 🌞\nНе забудьте календарь перевернуть!\n{weather_info}",
+                )
     else:
-        logger.error("Не удалось отправить утреннюю картинку: URL не найден.")
+        image_url = get_random_url_image()
+        if image_url:
+            await bot.send_photo(
+                chat_id=CHAT_ID,
+                photo=image_url,
+                caption=f"Доброе утро! 🌞\nНе забудьте сегодня улыбнуться!\n{weather_info}",
+            )
+        else:
+            logger.error("Не удалось отправить утреннюю картинку: URL не найден.")
 
 
 async def send_monthly_reminder(bot, message: str):
