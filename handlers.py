@@ -97,15 +97,16 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text(weather_info)
     elif "3 сентября" in user_message:
         today = datetime.date.today().strftime("%d/%m")
+        await update.message.reply_text(
+            f"я календарь переверну...\r\n{today}", parse_mode="HTML")
         if today == "03/09":
-            # отправляем локальный файл
             img_path = Path("img/3_sent_2.jpeg")
             if img_path.exists():
                 with img_path.open("rb") as photo:
                     await context.bot.send_photo(
                         chat_id=CHAT_ID,
                         photo=photo,
-                        caption=f"Доброе утро! 🌞\nНе забудьте календарь перевернуть!",
+                        caption=f"Не забудьте календарь перевернуть!",
                     )
     elif "правила" in user_message or "правила чата" in user_message:
         if not is_on_cooldown_global(chat_id, "rules_info"):
