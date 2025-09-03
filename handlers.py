@@ -95,19 +95,6 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if not is_on_cooldown_global(chat_id, "weather_info"):
             weather_info = get_weather()
             await update.message.reply_text(weather_info)
-    elif "3 сентября" in user_message:
-        today = datetime.date.today().strftime("%d/%m")
-        await update.message.reply_text(
-            f"я календарь переверну...\r\n{today}", parse_mode="HTML")
-        if today == "03/09":
-            img_path = Path("img/3_sent_2.jpeg")
-            if img_path.exists():
-                with img_path.open("rb") as photo:
-                    await context.bot.send_photo(
-                        chat_id=CHAT_ID,
-                        photo=photo,
-                        caption=f"Не забудьте календарь перевернуть!",
-                    )
     elif "правила" in user_message or "правила чата" in user_message:
         if not is_on_cooldown_global(chat_id, "rules_info"):
             await update.message.reply_text(
@@ -122,7 +109,6 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text(
                 "Показания счетчиков газа можно передать в Приложении или на сайте 'мой газ'.\n"
                 f"{GAS_URL}")
-
     elif any(phrase in user_message for phrase in ["тестовая картинка"]):
         image_url = get_random_url_image()
         image_data = get_img_data_by_url(image_url)
@@ -134,7 +120,19 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 photo=image_data,
                 caption="тестовая картинка"
             )
-
+    elif "3 сентября" in user_message:
+        today = datetime.date.today().strftime("%d/%m")
+        await update.message.reply_text(
+            f"я календарь переверну...\r\n{today}", parse_mode="HTML")
+        if today == "03/09":
+            img_path = Path("img/3_sent_2.jpeg")
+            if img_path.exists():
+                with img_path.open("rb") as photo:
+                    await context.bot.send_photo(
+                        chat_id=CHAT_ID,
+                        photo=photo,
+                        caption=f"Не забудьте календарь перевернуть!",
+                    )
     elif any(word in user_message for word in AD_KEYWORDS):
         logger.warning(f"SPAM: Рекламное сообщение '{update.message.text}' удалено.")
         await update.message.delete()
