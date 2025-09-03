@@ -122,11 +122,12 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
     elif "3 сентября" in user_message:
         today = datetime.date.today().strftime("%d/%m")
-        BASE_DIR = Path(__file__).resolve().parent
-        img_path = BASE_DIR / "img" / "3_sent_2.jpeg"
+        base_dir = Path(__file__).resolve().parent
+        img_path = base_dir / "img" / "3_sent_2.jpeg"
         # if today == "03/09" and img_path.exists():
         with img_path.open("rb") as photo:
-            await update.message.reply_photo(
+            await context.bot.send_photo(
+                chat_id=update.effective_chat.id,
                 photo=photo,
                 caption=f"я календарь переверну...\r\ndate: {today}\r\nimg exist: {img_path.exists()}",
             )
@@ -141,8 +142,8 @@ async def send_morning_image(bot):
 
     today = datetime.date.today().strftime("%d/%m")
     if today == "03/09":
-        BASE_DIR = Path(__file__).resolve().parent
-        img_path = BASE_DIR / "img" / "3_sent_2.jpeg"
+        base_dir = Path(__file__).resolve().parent
+        img_path = base_dir / "img" / "3_sent_2.jpeg"
         if img_path.exists():
             with img_path.open("rb") as photo:
                 await bot.send_photo(
@@ -171,9 +172,9 @@ async def send_monthly_reminder(bot, message: str):
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "Привет! Я бот Рита 🤖. Могу:\n"
-        "- Присылать утренние напоминания 🌅\n"
-        "- Напоминать передавать показания счетчиков 📊\n"
+        "Привет! Я бот Рита. Могу:\n"
+        "- Присылать утренние напоминания\n"
+        "- Напоминать передавать показания счетчиков\n"
         "- Отвечать на вопросы, куда следует звонить."
     )
 
