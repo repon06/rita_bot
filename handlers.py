@@ -122,10 +122,11 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
     elif "3 сентября" in user_message:
         today = datetime.date.today().strftime("%d/%m")
+        BASE_DIR = Path(__file__).resolve().parent
+        img_path = BASE_DIR / "img" / "3_sent_2.jpeg"
         await update.message.reply_text(
-            f"я календарь переверну...\r\n{today}", parse_mode="HTML")
+            f"я календарь переверну...\r\n{today}\r\npath exist: {img_path.exists()}", parse_mode="HTML")
         if today == "03/09":
-            img_path = Path("img/3_sent_2.jpeg")
             if img_path.exists():
                 with img_path.open("rb") as photo:
                     await context.bot.send_photo(
