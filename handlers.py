@@ -126,14 +126,15 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
         img_path = BASE_DIR / "img" / "3_sent_2.jpeg"
         await update.message.reply_text(
             f"я календарь переверну...\r\n{today}\r\npath exist: {img_path.exists()}", parse_mode="HTML")
-        if today == "03/09":
-            if img_path.exists():
-                with img_path.open("rb") as photo:
-                    await context.bot.send_photo(
-                        chat_id=CHAT_ID,
-                        photo=photo,
-                        caption=f"Не забудьте календарь перевернуть!",
-                    )
+        if today == "03/09" and img_path.exists():
+            with img_path.open("rb") as photo:
+                await context.bot.send_photo(
+                    # await update.message.reply_photo(
+                    chat_id=CHAT_ID,
+                    photo=photo,
+                    filename="3_sent_2.jpeg",
+                    caption=f"Не забудьте календарь перевернуть!",
+                )
     elif any(word in user_message for word in AD_KEYWORDS):
         logger.warning(f"SPAM: Рекламное сообщение '{update.message.text}' удалено.")
         await update.message.delete()
