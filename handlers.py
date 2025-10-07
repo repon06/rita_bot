@@ -131,7 +131,7 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 photo=photo,
                 caption=f"я календарь переверну...\r\ndate: {today}\r\nimg exist: {img_path.exists()}",
             )
-    elif any(word in user_message for word in AD_KEYWORDS):
+    elif any(word in user_message for word in AD_KEYWORDS) and 'работает' not in user_message:
         logger.warning(f"SPAM: Рекламное сообщение '{update.message.text}' удалено.")
         await update.message.delete()
 
