@@ -1,15 +1,15 @@
 import datetime
 import logging
-from pathlib import Path
 
 from cachetools import TTLCache
 from telegram import Update
 from telegram.ext import ContextTypes
 
 from config import PHONE_SARATOV_VODOKANAL, PHONE_T_PLUS, PHONE_AVARIA_UK, PHONE_LIFT, PHONE_DISPECHER_KIROVSKIY, \
-    PHONE_DISPECHER, PHONE_AO_SPGES, PHONE_UPRAV_UK, CHAT_ID, GAS_URL, AD_KEYWORDS
-from holidays import get_today_holiday_calend
+    PHONE_DISPECHER, PHONE_AO_SPGES, PHONE_UPRAV_UK, CHAT_ID, GAS_URL, AD_KEYWORDS, BASE_DIR
+from holidays import get_today_holiday
 from img_helper import get_random_url_image, get_img_data_by_url
+from qwen_send_request import generate_poster_holiday
 from weather import get_weather
 
 logger = logging.getLogger(__name__)
@@ -122,11 +122,20 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 caption="тестовая картинка"
             )
     elif "текущий праздник" in user_message:
-        holiday = get_today_holiday_calend()
+        holiday = get_today_holiday()
+        img_holiday_path = generate_poster_holiday(holiday)
+        if img_holiday_path is not None:
+            with img_holiday_path.open("rb") as photo:
+                await context.bot.send_photo(
+                    chat_id=update.effective_chat.id,
+                    photo=photo,
+                    caption=f"Знаменательное событие, совершенное в этот день: {holiday}",
+                )
+
     elif "3 сентября" in user_message:
         today = datetime.date.today().strftime("%d/%m")
-        base_dir = Path(__file__).resolve().parent
-        img_path = base_dir / "img" / "3_sent_2.jpeg"
+        # base_dir = Path(__file__).resolve().parent
+        img_path = BASE_DIR / "img" / "3_sent_2.jpeg"
         # if today == "03/09" and img_path.exists():
         with img_path.open("rb") as photo:
             await context.bot.send_photo(
@@ -145,8 +154,8 @@ async def send_morning_image(bot):
 
     today = datetime.date.today().strftime("%d/%m")
     if today == "03/09":
-        base_dir = Path(__file__).resolve().parent
-        img_path = base_dir / "img" / "3_sent_2.jpeg"
+        # base_dir = Path(__file__).resolve().parent
+        img_path = BASE_DIR / "img" / "3_sent_2.jpeg"
         if img_path.exists():
             with img_path.open("rb") as photo:
                 await bot.send_photo(

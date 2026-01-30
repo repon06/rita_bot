@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from dotenv import load_dotenv
 
@@ -38,3 +39,5 @@ AD_KEYWORDS = [
 
 EMAIL = os.getenv("QWEN_EMAIL")
 PASSWORD = os.getenv("QWEN_PASS")
+
+BASE_DIR = Path(__file__).resolve().parent

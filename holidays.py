@@ -5,7 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def get_today_holiday_calend():
+def get_today_holiday():
     d = date.today()
     url = f"https://www.calend.ru/day/{d.year}-{d.month:02d}-{d.day:02d}/"
     # url = f"https://www.calend.ru/day/2026-01-31/"
@@ -31,4 +31,4 @@ def get_today_holiday_calend():
 
 
 if __name__ == "__main__":
-    holiday = get_today_holiday_calend()
+    holiday = get_today_holiday()
