@@ -54,7 +54,12 @@ def generate_poster_holiday(holiday: str | None):
     opts.add_argument("--disable-blink-features=AutomationControlled")
     opts.add_experimental_option("excludeSwitches", ["enable-automation"])
     opts.add_experimental_option("useAutomationExtension", False)
-    # opts.add_argument("--headless=new")
+    opts.add_argument("--headless=new")
+    opts.add_argument("--no-sandbox")
+    opts.add_argument("--disable-dev-shm-usage")
+    opts.add_argument("--disable-gpu")
+    opts.add_argument("--window-size=1920,1080")
+
 
     driver = webdriver.Chrome(options=opts)
     wait = WebDriverWait(driver, 120)
