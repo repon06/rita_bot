@@ -1,12 +1,14 @@
+import logging
+from datetime import date
+
 import requests
 from bs4 import BeautifulSoup
-from datetime import date
-import logging
+
 
 def get_today_holiday_calend():
     d = date.today()
     url = f"https://www.calend.ru/day/{d.year}-{d.month:02d}-{d.day:02d}/"
-    url = f"https://www.calend.ru/day/2026-01-31/"
+    # url = f"https://www.calend.ru/day/2026-01-31/"
 
     try:
         r = requests.get(url, timeout=10)
@@ -15,7 +17,7 @@ def get_today_holiday_calend():
         soup = BeautifulSoup(r.text, "html.parser")
 
         # Первый праздник дня
-        #holiday = soup.select_one("ul.events li a")
+        # holiday = soup.select_one("ul.events li a")
         holidays = soup.select("div.holidays ul.itemsNet>li>div.caption>span.title")
         holiday = holidays[0].get_text(strip=True) if holidays else None
         if holiday:
@@ -27,5 +29,6 @@ def get_today_holiday_calend():
 
     return None
 
+
 if __name__ == "__main__":
-    get_today_holiday_calend()
+    holiday = get_today_holiday_calend()

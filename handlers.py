@@ -8,6 +8,7 @@ from telegram.ext import ContextTypes
 
 from config import PHONE_SARATOV_VODOKANAL, PHONE_T_PLUS, PHONE_AVARIA_UK, PHONE_LIFT, PHONE_DISPECHER_KIROVSKIY, \
     PHONE_DISPECHER, PHONE_AO_SPGES, PHONE_UPRAV_UK, CHAT_ID, GAS_URL, AD_KEYWORDS
+from holidays import get_today_holiday_calend
 from img_helper import get_random_url_image, get_img_data_by_url
 from weather import get_weather
 
@@ -120,6 +121,8 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 photo=image_data,
                 caption="тестовая картинка"
             )
+    elif "текущий праздник" in user_message:
+        holiday = get_today_holiday_calend()
     elif "3 сентября" in user_message:
         today = datetime.date.today().strftime("%d/%m")
         base_dir = Path(__file__).resolve().parent

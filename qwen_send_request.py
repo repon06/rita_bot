@@ -1,7 +1,9 @@
 import time
 
 import pyperclip
+import requests
 from selenium import webdriver
+from selenium.webdriver import Keys
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -19,13 +21,20 @@ button_send_locator = (By.CSS_SELECTOR, "button.send-button")
 text_result_list_locator = (By.CSS_SELECTOR, 'div.qwen-markdown-code-body')
 button_stop_locator = (By.CSS_SELECTOR, "button.stop-button")
 text_full_result_list_locator = (By.CSS_SELECTOR, "div.view-line")
+button_copy_clipboard_located_list = (
+    By.CSS_SELECTOR, "pre.qwen-markdown-code div.qwen-markdown-code-header-action-item")
+
+message_copy_located = (By.CSS_SELECTOR, "div.qwen-message-content-text")
+label_generation_location = (By.CSS_SELECTOR, "span.prompt-input-input-func-type-text")
+button_generation_location = (By.XPATH, "//div[text()='Image Generation' or text()='Генерация изображений']")
 
 
-def main():
-    query_text = ("создай краткий и емкий промт на английском языке для генерации изображения открытки к "
-                  "знаменательному событию в истории: "
-                  "Зарегистрирован товарный знак «Кока-Кола» "
-                  "выведи в виде кода")
+def generate_poster_holiday(holiday: str | None):
+    query_text = ("Создай краткий и емкий промт на английском языке для генерации постера открытки "
+                  "с соотношением сторон: 9:16 "
+                  "к знаменательному событию в истории: "
+                  f"{holiday}."
+                  "Выведи в виде кода.")
 
     opts = Options()
 
@@ -60,7 +69,6 @@ def main():
 
         pass_input = wait.until(EC.visibility_of_element_located(input_password_locator))
         pass_input.send_keys(PASSWORD)
-        # driver.find_element(By.NAME, "password").send_keys(PASSWORD)
 
         wait.until(EC.element_to_be_clickable(button_submit_locator)).click()
 
@@ -74,7 +82,12 @@ def main():
         textarea_input = wait.until(EC.visibility_of_element_located(textarea_query_locator))
         textarea_input.click()
         textarea_input.clear()
-        textarea_input.send_keys(query_text)
+        # textarea_input.send_keys(query_text)
+        for l in query_text:
+            time.sleep(0.05)
+            if l == "\n":
+                textarea_input.send_keys(Keys.ENTER)
+            textarea_input.send_keys(l)
         time.sleep(0.1)
         # driver.save_screenshot("qwen_logged_1.png")
 
@@ -105,11 +118,6 @@ def main():
         result_text = text_result_element_list[-1].text
         print(result_text)'''
 
-        button_copy_clipboard_located_list = (
-            By.CSS_SELECTOR, "pre.qwen-markdown-code div.qwen-markdown-code-header-action-item")
-
-        message_copy_located = (By.CSS_SELECTOR, "div.qwen-message-content-text")
-
         copy_to_clipboard_element_list = wait.until(
             EC.presence_of_all_elements_located(button_copy_clipboard_located_list))
         copy_to_clipboard_element_list[0].click()
@@ -122,33 +130,52 @@ def main():
         driver.save_screenshot("qwen_logged.png")
 
         # переходим к генерации IMG
-        button_generation_location = (By.XPATH,
-                                      "//div[text()='Image Generation' or text()='Генерация изображений']")
-        button_generation_element = driver.find_element(button_generation_location)
+        button_generation_element = wait.until(EC.element_to_be_clickable(button_generation_location))
         button_generation_element.click()
 
-        label_generation_location = (By.CSS_SELECTOR, "span.prompt-input-input-func-type-text")
         wait.until(EC.visibility_of_element_located(label_generation_location))
 
         textarea_input = wait.until(EC.visibility_of_element_located(textarea_query_locator))
         textarea_input.click()
         textarea_input.clear()
-        textarea_input.send_keys(query_generation)
+        # textarea_input.send_keys(query_generation)
+        for l in query_generation:
+            time.sleep(0.05)
+            textarea_input.send_keys(l)
         time.sleep(0.1)
 
         button_send_element = wait.until(EC.element_to_be_clickable(button_send_locator))
         button_send_element.click()
 
-        WebDriverWait(driver, 360).until(EC.presence_of_element_located(button_stop_locator))
-        WebDriverWait(driver, 360).until(EC.invisibility_of_element_located(button_stop_locator))
+        WebDriverWait(driver, 560).until(EC.presence_of_element_located(button_stop_locator))
+        WebDriverWait(driver, 560).until(EC.invisibility_of_element_located(button_stop_locator))
 
-        driver.save_screenshot("error.png")
+        driver.save_screenshot("qwen_response.png")
+
+        download_generate_image(driver)
+
         # driver.quit()
+        return ""
     except Exception as e:
         driver.save_screenshot("error.png")
         print(e)
-        raise
+        return None
+
+
+def download_generate_image(driver):
+    generate_image_locator = (By.CSS_SELECTOR, "img.ant-image-img")
+    # img = driver.find_element(generate_image_locator)
+    img = WebDriverWait(driver, 60).until(
+        EC.presence_of_element_located(generate_image_locator)
+    )
+    url = img.get_attribute("src")
+
+    r = requests.get(url, timeout=30)
+    r.raise_for_status()
+
+    with open("generate_image.png", "wb") as f:
+        f.write(r.content)
 
 
 if __name__ == "__main__":
-    main()
+    img_holiday_path = generate_poster_holiday("Зарегистрирован товарный знак «Кока-Кола»")
