@@ -9,7 +9,7 @@ def get_today_holiday():
     d = date.today()
     url = f"https://www.calend.ru/day/{d.year}-{d.month:02d}-{d.day:02d}/"
     # url = f"https://www.calend.ru/day/2026-01-31/"
-
+    logging.info(f'Ушел запрос {url}')
     try:
         r = requests.get(url, timeout=10)
         r.raise_for_status()

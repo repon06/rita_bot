@@ -1,4 +1,5 @@
 import time
+import logging
 
 import pyperclip
 import requests
@@ -37,6 +38,7 @@ def generate_poster_holiday(holiday: str | None):
                   "к знаменательному событию в истории: "
                   f"'{holiday}'. "
                   "Выведи в виде кода.")
+    logging.info(f'Запускаем в qwen запрос: {query_text}')
 
     opts = Options()
 
@@ -133,6 +135,7 @@ def generate_poster_holiday(holiday: str | None):
 
         query_generation = pyperclip.paste()
         print(query_generation)
+        logging.info(f'Получили промт: {query_generation}')
 
         # driver.save_screenshot("qwen_logged.png")
 

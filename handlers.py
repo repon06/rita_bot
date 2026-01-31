@@ -124,8 +124,11 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
     elif "текущий праздник" == user_message:
         holiday = get_today_holiday()
+        logging.info(f'Праздник: {holiday}')
+
         img_holiday_path = generate_poster_holiday(holiday)
         if img_holiday_path is not None:
+            logging.info(f'Сгенерили постер: {img_holiday_path}')
             with img_holiday_path.open("rb") as photo:
                 await context.bot.send_photo(
                     chat_id=update.effective_chat.id,
