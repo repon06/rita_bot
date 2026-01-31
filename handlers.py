@@ -31,6 +31,7 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_message = update.message.text.lower().strip()
     if not user_message:
         return
+    print(f'{user_message=}')
 
     if ("куда звонить" in user_message or "когда починят" in user_message):
         if not is_on_cooldown_global(chat_id, "repair_info"):
@@ -121,7 +122,7 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 photo=image_data,
                 caption="тестовая картинка"
             )
-    elif "текущий праздник" in user_message:
+    elif "текущий праздник" == user_message:
         holiday = get_today_holiday()
         img_holiday_path = generate_poster_holiday(holiday)
         if img_holiday_path is not None:
