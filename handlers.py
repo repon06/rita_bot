@@ -31,7 +31,7 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_message = update.message.text.lower().strip()
     if not user_message:
         return
-    print(f'{user_message=}')
+    logger.debug(f'{user_message=}')
 
     if ("куда звонить" in user_message or "когда починят" in user_message):
         if not is_on_cooldown_global(chat_id, "repair_info"):

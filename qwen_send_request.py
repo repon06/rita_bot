@@ -183,4 +183,4 @@ def download_generate_image(driver, img_name=None):
 
 
 if __name__ == "__main__":
-    img_holiday_path = generate_poster_holiday("Зарегистрирован товарный знак «Кока-Кола»")
+    img_holiday_path = generate_poster_holiday("Международный день ювелира")
