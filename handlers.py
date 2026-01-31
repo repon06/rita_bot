@@ -135,7 +135,8 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     photo=photo,
                     caption=f"Знаменательное событие, совершенное в этот день: {holiday}",
                 )
-
+        else:
+            logging.error(f'не сгенерили постер!')
     elif "3 сентября" in user_message:
         today = datetime.date.today().strftime("%d/%m")
         # base_dir = Path(__file__).resolve().parent

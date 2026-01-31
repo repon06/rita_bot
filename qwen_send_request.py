@@ -1,5 +1,5 @@
-import time
 import logging
+import time
 
 import pyperclip
 import requests
@@ -61,7 +61,6 @@ def generate_poster_holiday(holiday: str | None):
     opts.add_argument("--disable-dev-shm-usage")
     opts.add_argument("--disable-gpu")
     opts.add_argument("--window-size=1920,1080")
-
 
     driver = webdriver.Chrome(options=opts)
     wait = WebDriverWait(driver, 120)
@@ -168,6 +167,7 @@ def generate_poster_holiday(holiday: str | None):
         return generate_image_path
     except Exception as e:
         driver.save_screenshot((BASE_DIR / "img" / "error.png"))
+        logging.info(f'Ошибка в работе selenium/qwen: {e}')
         print(e)
         return None
 
