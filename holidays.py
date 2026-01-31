@@ -1,4 +1,5 @@
 import logging
+import random
 from datetime import date
 
 import requests
@@ -18,8 +19,19 @@ def get_today_holiday():
 
         # Первый праздник дня
         # holiday = soup.select_one("ul.events li a")
-        holidays = soup.select("div.holidays ul.itemsNet>li>div.caption>span.title")
-        holiday = holidays[0].get_text(strip=True) if holidays else None
+        holiday_list = soup.select("div.holidays ul.itemsNet>li>div.caption>span.title")
+        holiday = holiday_list[0].get_text(strip=True) if holiday_list else None
+
+        # знаменательные даты - блоки список "div.knownDates>ul>li"
+        # знаменательные даты - блоки год "div.knownDates>ul>li span.year_on_img"
+        # знаменательные даты - блоки описание "div.knownDates>ul>li span.title"
+        known_dates_list = soup.select("div.knownDates>ul>li")
+        item = random.choice(known_dates_list)
+        holiday_year = item.select_one("span.year").get_text(strip=True)
+        holiday_title = item.select_one("span.title a").get_text(strip=True)
+
+        holiday = f'{holiday_year} {holiday_title}'
+
         if holiday:
             print(holiday.strip())
             return holiday.strip()
