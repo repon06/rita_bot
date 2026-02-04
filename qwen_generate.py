@@ -70,16 +70,25 @@ async def generate_poster_holiday(holiday: str):
             await browser.close()
             return generate_image_path
     except Exception as e:
+        # скриншот только если страница доступна
         if page:
             ts = datetime.now().strftime("%Y%m%d_%H%M%S")
             screenshot_path = BASE_DIR / "img" / f"error_{ts}.png"
             screenshot_path.parent.mkdir(parents=True, exist_ok=True)
-            await page.screenshot(path=str(screenshot_path), full_page=True)
-        raise
+            try:
+                await page.screenshot(path=str(screenshot_path), full_page=True)
+                print(f"Скриншот сохранён: {screenshot_path}")
+            except Exception as ex:
+                print(f"Не удалось сохранить скриншот: {ex}")
+        raise  # проброс ошибки дальше
 
     finally:
-        if page:
-            await page.context.browser.close()
+        # закрываем браузер после всех действий
+        if browser:
+            try:
+                await browser.close()
+            except Exception:
+                pass
 
 
 if __name__ == "__main__":
