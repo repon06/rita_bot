@@ -7,9 +7,10 @@ from telegram.ext import ContextTypes
 
 from config import PHONE_SARATOV_VODOKANAL, PHONE_T_PLUS, PHONE_AVARIA_UK, PHONE_LIFT, PHONE_DISPECHER_KIROVSKIY, \
     PHONE_DISPECHER, PHONE_AO_SPGES, PHONE_UPRAV_UK, CHAT_ID, GAS_URL, AD_KEYWORDS, BASE_DIR
+from generate.pollinations_generate import pollinations_generate_prompt, pollinations_generate_poster
 from holidays import get_today_holiday
 from img_helper import get_random_url_image, get_img_data_by_url
-from qwen_send_request import generate_poster_holiday
+from generate.qwen_send_request import generate_poster_holiday
 from weather import get_weather
 
 logger = logging.getLogger(__name__)
@@ -126,7 +127,9 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
         holiday = get_today_holiday()
         logging.info(f'Праздник: {holiday}')
 
-        img_holiday_path = generate_poster_holiday(holiday)
+        #img_holiday_path = generate_poster_holiday(holiday)
+        holiday_prompt = pollinations_generate_prompt(holiday)
+        img_holiday_path = pollinations_generate_poster(holiday_prompt)
         if img_holiday_path is not None:
             logging.info(f'Сгенерили постер: {img_holiday_path}')
             with img_holiday_path.open("rb") as photo:

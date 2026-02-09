@@ -1,21 +1,45 @@
 import io
 
+import requests
 from PIL import Image
 from google import genai
 from google.genai import types
 
-from config import GEMINI_API_KEY
+from config import GEMINI_API_KEY, BASE_DIR
+
+
+def generate_free_poster(prompt: str):
+    url = f"https://image.pollinations.ai/prompt/{prompt}?&enhance=true&width=450&height=800&seed=42&model=zimage"
+    response = requests.get(url)
+    path = (BASE_DIR / "img" / "generate.png")
+    with open(path, "wb") as f:
+        f.write(response.content)
+    print(f"Сохранен файл: {path}")
+    return path
 
 
 def generate_lite():
-    import requests
-
-    prompt = 'Dynamic Olympic luge poster: athlete speeding down icy track at sunset, motion blur trails, snow spray frozen in air, Olympic rings glowing above alpine peaks, 1964 Innsbruck vintage style, bold typography "Luge Debut 1964", crisp winter atmosphere'
-    #url = f"https://image.pollinations.ai/prompt/{prompt}?width=450&height=800&model=flux"
+    prompt = """
+    Vertical Olympic luge poster, aspect ratio 2:3. 
+    Athlete speeding down icy track, motion blur trails, snow spray frozen in air. 
+    Alpine peaks at sunset, crisp winter atmosphere. 
+    Olympic rings glowing above. 
+    1964 Innsbruck vintage style, bold typography. 
+    Text on poster: "Luge Debut • 1964". 
+    No blur on text, no extra logos, no watermark, no photo-realism, high detail, 
+    cinematic lighting, poster design, ultra-detailed, sharp lines.
+    """
+    prompt = """
+Dynamic Olympic luge poster: athlete speeding down icy track at sunset, motion blur trails, 
+snow spray frozen in air, Olympic rings glowing above alpine peaks, 1964 Innsbruck vintage style, 
+bold typography "Luge Debut • 1964", crisp winter atmosphere
+    """
+    # url = f"https://image.pollinations.ai/prompt/{prompt}?width=450&height=800&model=flux"
     url = f"https://image.pollinations.ai/prompt/{prompt}?width=450&height=800&model=zimage"
+    url = f"https://image.pollinations.ai/prompt/{prompt}?&enhance=true&width=450&height=800&seed=42&model=imagen-4"
 
     response = requests.get(url)
-    with open("poster.png", "wb") as f:
+    with open((BASE_DIR / "img" / "generate.png"), "wb") as f:
         f.write(response.content)
     print("Готово!")
 
@@ -64,3 +88,4 @@ def generate_poster():
 if __name__ == "__main__":
     generate_lite()
     # generate_poster()
+    # prompt = pollinations_generate_prompt("1904 Началась Русско-японская война")
