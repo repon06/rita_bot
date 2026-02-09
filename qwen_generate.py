@@ -14,6 +14,7 @@ async def generate_poster_holiday(holiday: str):
         f"Создай краткий и емкий промт на английском языке для генерации постера открытки "
         f"с соотношением сторон: 9:16 для события: '{holiday}'."
     )
+    print(query_text)
     try:
         async with async_playwright() as p:
             browser = await p.chromium.launch(headless=True, args=[
