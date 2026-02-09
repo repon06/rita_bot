@@ -10,7 +10,6 @@ from config import PHONE_SARATOV_VODOKANAL, PHONE_T_PLUS, PHONE_AVARIA_UK, PHONE
 from generate.pollinations_generate import pollinations_generate_prompt, pollinations_generate_poster
 from holidays import get_today_holiday
 from img_helper import get_random_url_image, get_img_data_by_url
-from generate.qwen_send_request import generate_poster_holiday
 from weather import get_weather
 
 logger = logging.getLogger(__name__)
@@ -127,7 +126,7 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
         holiday = get_today_holiday()
         logging.info(f'Праздник: {holiday}')
 
-        #img_holiday_path = generate_poster_holiday(holiday)
+        # img_holiday_path = generate_poster_holiday(holiday)
         holiday_prompt = pollinations_generate_prompt(holiday)
         img_holiday_path = pollinations_generate_poster(holiday_prompt)
         if img_holiday_path is not None:
@@ -172,15 +171,31 @@ async def send_morning_image(bot):
                     caption=f"Доброе утро! 🌞\nНе забудьте календарь перевернуть!\n{weather_info}",
                 )
     else:
-        image_url = get_random_url_image()
-        if image_url:
-            await bot.send_photo(
-                chat_id=CHAT_ID,
-                photo=image_url,
-                caption=f"Доброе утро! 🌞\nНе забудьте сегодня улыбнуться!\n{weather_info}",
-            )
+        holiday = get_today_holiday()
+        holiday_prompt = pollinations_generate_prompt(holiday)
+        img_holiday_path = pollinations_generate_poster(holiday_prompt)
+
+        if img_holiday_path and img_holiday_path.exists():
+            with img_holiday_path.open("rb") as photo:
+                await bot.bot.send_photo(
+                    chat_id=CHAT_ID,
+                    photo=photo,
+                    caption=f"Доброе утро! 🌞\n"
+                            f"{weather_info}\n"
+                            f"Знаменательное событие, совершенное в этот день: {holiday}"
+                )
         else:
-            logger.error("Не удалось отправить утреннюю картинку: URL не найден.")
+            logging.error(f'не сгенерили постер!')
+
+            image_url = get_random_url_image()
+            if image_url:
+                await bot.send_photo(
+                    chat_id=CHAT_ID,
+                    photo=image_url,
+                    caption=f"Доброе утро! 🌞\nНе забудьте сегодня улыбнуться!\n{weather_info}",
+                )
+            else:
+                logger.error("Не удалось отправить утреннюю картинку: URL не найден.")
 
 
 async def send_monthly_reminder(bot, message: str):
