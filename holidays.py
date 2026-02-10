@@ -33,7 +33,7 @@ def get_today_holiday():
         holiday = f'{holiday_year} {holiday_title}'
 
         if holiday:
-            print(holiday.strip())
+            logging.info(holiday.strip())
             return holiday.strip()
 
     except Exception as e:

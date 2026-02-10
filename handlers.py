@@ -177,7 +177,7 @@ async def send_morning_image(bot):
 
         if img_holiday_path and img_holiday_path.exists():
             with img_holiday_path.open("rb") as photo:
-                await bot.bot.send_photo(
+                await bot.send_photo(
                     chat_id=CHAT_ID,
                     photo=photo,
                     caption=f"Доброе утро! 🌞\n"

@@ -15,7 +15,7 @@ def pollinations_generate_prompt(holiday: str):
                   "к знаменательному событию в истории: "
                   f"'{holiday}'. "
                   "Используй 5 цветов. Выведи в виде кода. ничего больше кроме промпта не выводи")
-    logging.debug(f'Запускаем запрос: {query_text}')
+    logging.info(f'Запускаем запрос на генерацию промпта: {query_text}')
 
     encoded_query = urllib.parse.quote(query_text)
 
@@ -23,13 +23,14 @@ def pollinations_generate_prompt(holiday: str):
     res = conn.getresponse()
     data = res.read()
     result_prompt = data.decode("utf-8")
-    logging.debug(result_prompt)
+    logging.info(result_prompt)
     return result_prompt
 
 
 def pollinations_generate_poster(prompt: str):
     path = (BASE_DIR / "img" / "generate.png")
     encoded_query = urllib.parse.quote(prompt)
+    logging.info(f'Запускаем запрос на генерацию изображения: {prompt}')
 
     try:
         conn.request("GET",
@@ -42,7 +43,7 @@ def pollinations_generate_poster(prompt: str):
         with open(path, "wb") as f:
             f.write(data)
 
-        logging.debug(f"Poster saved at: {path}")
+        logging.info(f"Poster saved at: {path}")
         return path
     except http.client.HTTPException as e:
         logging.error(e)
