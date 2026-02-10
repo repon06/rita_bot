@@ -13,7 +13,7 @@ def ping_server():
     while True:
         try:
             response = requests.get(HOST_BOT)
-            logging.info(f"Пинг успешен: {response.status_code}")
+            logging.debug(f"Пинг успешен: {response.status_code}")
         except requests.RequestException as e:
             logging.error(f"Ошибка при пинге: {e}")
         time.sleep(PING_INTERVAL)
