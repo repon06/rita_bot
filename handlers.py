@@ -135,7 +135,7 @@ async def reply_to_phrases(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await context.bot.send_photo(
                     chat_id=update.effective_chat.id,
                     photo=photo,
-                    caption=f"Знаменательное событие, совершенное в этот день: {holiday}",
+                    caption=f"Знаменательное событие: В этот день {holiday}",
                 )
         else:
             logging.error(f'не сгенерили постер!')
