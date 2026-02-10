@@ -3,6 +3,7 @@ import logging
 import urllib
 import urllib.parse
 
+import holidays
 from config import POLLINATIONS_REPON_KEY, BASE_DIR
 
 conn = http.client.HTTPSConnection("gen.pollinations.ai")
@@ -14,7 +15,9 @@ def pollinations_generate_prompt(holiday: str):
                   "с соотношением сторон: 9:16 "
                   "к знаменательному событию в истории: "
                   f"'{holiday}'. "
-                  "Используй 5 цветов. Выведи в виде кода. ничего больше кроме промпта не выводи")
+                  #"Используй 5 цветов. Выведи в виде кода. ничего больше кроме промпта не выводи")
+                  "Стиль cinematic realism, AI photography, bokeh depth shot, storytelling image, realistic creative AI generation, moody cinematic visual, viral AI post, travel inspired realism, AI storytelling composition, 8k, ultra detailed, sharp subject, soft background.. "
+                  "Выведи в виде кода. ничего больше кроме промпта не выводи")
     logging.info(f'Запускаем запрос на генерацию промпта: {query_text}')
 
     encoded_query = urllib.parse.quote(query_text)
@@ -51,5 +54,8 @@ def pollinations_generate_poster(prompt: str):
 
 
 if __name__ == "__main__":
-    prompt = pollinations_generate_prompt("1969 Состоялся первый полет самолета Боинг 747")
+    holiday = holidays.get_today_holiday()
+    print(holiday)
+    prompt = pollinations_generate_prompt(holiday)
+    print(prompt)
     path = pollinations_generate_poster(prompt)
