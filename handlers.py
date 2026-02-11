@@ -181,8 +181,8 @@ async def send_morning_image(bot):
                     chat_id=CHAT_ID,
                     photo=photo,
                     caption=f"Доброе утро! 🌞\n"
-                            f"{weather_info}\n"
-                            f"Знаменательное событие, совершенное в этот день: {holiday}"
+                            f"{weather_info}\n\n"
+                            f"Знаменательное событие: \nВ этот день {holiday}"
                 )
         else:
             logging.error(f'не сгенерили постер!')
