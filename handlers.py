@@ -171,21 +171,24 @@ async def send_morning_image(bot):
                     caption=f"Доброе утро! 🌞\nНе забудьте календарь перевернуть!\n{weather_info}",
                 )
     else:
+        holiday_prompt = None
         img_holiday_path = None
         max_retries = 3
 
         holiday = get_today_holiday()
-        holiday_prompt = pollinations_generate_prompt(holiday)
+        for attempt in range(max_retries):
+            holiday_prompt = pollinations_generate_prompt(holiday)
+            if holiday_prompt and holiday_prompt is not None:
+                break
+            logger.warning(f"Попытка {attempt} не удалась, {holiday_prompt=}")
 
-        for attempt in range(1, max_retries + 1):
+        for attempt in range(max_retries):
             img_holiday_path = pollinations_generate_poster(holiday_prompt)
-
             if img_holiday_path and img_holiday_path.exists():
                 break
+            logger.warning(f"Попытка {attempt} не удалась, {img_holiday_path=}")
 
-            logger.warning(f"Попытка {attempt} не удалась, img_holiday_path={img_holiday_path}")
-
-        #img_holiday_path = pollinations_generate_poster(holiday_prompt)
+        # img_holiday_path = pollinations_generate_poster(holiday_prompt)
 
         if img_holiday_path and img_holiday_path.exists():
             with img_holiday_path.open("rb") as photo:
