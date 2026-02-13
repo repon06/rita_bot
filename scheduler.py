@@ -10,8 +10,8 @@ def setup_scheduler(application):
     scheduler.add_job(
         send_morning_image,  # Асинхронная функция
         trigger="cron",
-        hour=9,
-        minute=0,
+        hour=10,
+        minute=45,
         kwargs={"bot": application.bot},  # Передаем bot как аргумент
     )
 
