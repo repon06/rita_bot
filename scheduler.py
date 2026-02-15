@@ -11,7 +11,7 @@ def setup_scheduler(application):
         send_morning_image,  # Асинхронная функция
         trigger="cron",
         hour=9,
-        minute=0,
+        minute=30,
         kwargs={"bot": application.bot},
     )
 
