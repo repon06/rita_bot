@@ -1,3 +1,5 @@
+import asyncio
+
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from config import DAYS
 from handlers import send_morning_image, send_monthly_reminder
@@ -8,11 +10,13 @@ def setup_scheduler(application):
 
     # Задача для утреннего сообщения
     scheduler.add_job(
-        send_morning_image,  # Асинхронная функция
+        lambda: asyncio.create_task(
+            send_morning_image(bot=application.bot)),
+        #send_morning_image,  # Асинхронная функция
         trigger="cron",
         hour=9,
-        minute=30,
-        kwargs={"bot": application.bot},
+        minute=0,
+        #kwargs={"bot": application.bot},
     )
 
     for day in DAYS:
