@@ -10,13 +10,11 @@ def setup_scheduler(application):
 
     # Задача для утреннего сообщения
     scheduler.add_job(
-        lambda: asyncio.create_task(
-            send_morning_image(bot=application.bot)),
-        #send_morning_image,  # Асинхронная функция
+        send_morning_image,
         trigger="cron",
-        hour=9,
-        minute=0,
-        #kwargs={"bot": application.bot},
+        hour=12,
+        minute=30,
+        kwargs={"bot": application.bot},
     )
 
     for day in DAYS:
