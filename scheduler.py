@@ -12,8 +12,8 @@ def setup_scheduler(application):
     scheduler.add_job(
         send_morning_image,
         trigger="cron",
-        hour=12,
-        minute=30,
+        hour=9,
+        minute=0,
         kwargs={"bot": application.bot},
     )
 
