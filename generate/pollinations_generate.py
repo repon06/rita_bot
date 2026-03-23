@@ -19,7 +19,8 @@ def pollinations_generate_prompt(holiday: str):
                   "к знаменательному событию в истории: "
                   f"'{holiday}'. "
                   # "Используй 5 цветов. Выведи в виде кода. ничего больше кроме промпта не выводи")
-                  "Стиль cinematic realism, AI photography, bokeh depth shot, storytelling image, realistic creative AI generation, moody cinematic visual, viral AI post, AI storytelling composition, 8k, ultra detailed, sharp subject, soft background. "
+                  #"Стиль cinematic realism, AI photography, bokeh depth shot, storytelling image, realistic creative AI generation, moody cinematic visual, viral AI post, AI storytelling composition, 8k, ultra detailed, sharp subject, soft background. "
+                  "Comic book style, graphic novel illustration, bold outlines, cel shading, vibrant colors, dynamic composition, dramatic lighting, storytelling scene, highly detailed, sharp subject, clean background, "
                   "no people, no humans, no person "
                   # "Выведи в виде кода. ничего больше кроме промпта не выводи" # , travel inspired realism
                   )
